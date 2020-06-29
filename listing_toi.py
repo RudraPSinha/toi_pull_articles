@@ -6,10 +6,11 @@ from lxml import etree
 import sqlite3 
 import random
 import sys
+import time
 
 sys.setrecursionlimit(10**6)
 
-connection = sqlite3.connect('database2.db')
+connection = sqlite3.connect('database.db')
 cursor = connection.cursor()
 
 cursor.execute('''
@@ -41,6 +42,7 @@ def next(current_page):
             json.dump(data, config, indent=4)
             config.truncate()
     
+    
     get_list(current_page)
 
 
@@ -53,7 +55,7 @@ def insert_to_db(sql_data):
     conn.commit()
     conn.close()
 
-def parse(soup,current_page):
+def parse(soup,current_page,start):
     dom = etree.HTML(str(soup))
     node_date = dom.xpath('/html/body/div[1]/table[2]/tbody/tr[2]/td[1]/div[2]/b')
     get_list_articles_1 = dom.xpath('/html/body/div[1]/table[2]/tbody/tr[2]/td[1]/div[3]/table/tbody/tr[2]/td[1]/span/a')
@@ -81,10 +83,14 @@ def parse(soup,current_page):
         #print(x.text)
         #print(x.get("href"))
     insert_to_db(head_array)
+    head_array = []
+    end = time.time()
+    print("Time taken for function: ", end - start)
     next(current_page)
 
 
 def get_list(current_page):
+    start = time.time()
     print(f"Current page at {current_page}")
     http = urllib3.PoolManager()
     url = data["toi"]["url"]
@@ -103,7 +109,8 @@ def get_list(current_page):
     
     if passed == True:
         soup = BeautifulSoup(response.data, "html5lib")
-        parse(soup,current_page)
+        response.release_conn()
+        parse(soup,current_page,start)
         
 
     
