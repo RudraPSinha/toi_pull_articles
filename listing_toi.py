@@ -5,6 +5,9 @@ from bs4 import BeautifulSoup
 from lxml import etree
 import sqlite3 
 import random
+import sys
+
+sys.setrecursionlimit(10**6)
 
 connection = sqlite3.connect('database.db')
 cursor = connection.cursor()
