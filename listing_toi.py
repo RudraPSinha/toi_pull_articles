@@ -9,12 +9,12 @@ import sys
 
 sys.setrecursionlimit(10**6)
 
-connection = sqlite3.connect('database.db')
+connection = sqlite3.connect('database2.db')
 cursor = connection.cursor()
 
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS links (
-	title text NOT NULL,
+	title text,
 	date text,
     page_num text,
     url_end text,
@@ -45,7 +45,7 @@ def next(current_page):
 
 
 def insert_to_db(sql_data):
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect("database2.db")
     cursor = conn.cursor()
     cursor.executemany("INSERT INTO links(title,date,page_num,url_end,parsed_int) VALUES (?,?,?,?,?)",
     sql_data)
