@@ -115,7 +115,7 @@ def get_list(current_page):
         response.release_conn()
         parse(soup,current_page,start)
         gc.collect()
-        get_list((next(current_page)))
+        #get_list((next(current_page)))
         
 
     
@@ -125,5 +125,9 @@ def get_list(current_page):
 if __name__ == '__main__':
     current_page = data["toi"]["current"]
     max_ = data["toi"]["max"]
-    get_list(current_page)
+    #get_list(current_page)
+
+    while current_page > max_:
+        get_list(current_page)
+        current_page = next(current_page)
     
