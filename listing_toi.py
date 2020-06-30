@@ -11,7 +11,7 @@ import gc
 
 sys.setrecursionlimit(10**6)
 
-connection = sqlite3.connect('database.db')
+connection = sqlite3.connect('database2.db')
 cursor = connection.cursor()
 
 cursor.execute('''
@@ -43,8 +43,7 @@ def next(current_page):
             json.dump(data, config, indent=4)
             config.truncate()
     
-    
-    get_list(current_page)
+    return current_page
 
 
 def insert_to_db(sql_data):
@@ -84,11 +83,13 @@ def parse(soup,current_page,start):
         #print(x.text)
         #print(x.get("href"))
     insert_to_db(head_array)
-    head_array = []
+    del get_list_articles_1
+    del get_list_articles_2
+    del head_array
     gc.collect()
     end = time.time()
     print("Time taken for function: ", end - start)
-    next(current_page)
+    
 
 
 def get_list(current_page):
@@ -112,8 +113,9 @@ def get_list(current_page):
     if passed == True:
         soup = BeautifulSoup(response.data, "html5lib")
         response.release_conn()
-        gc.collect()
         parse(soup,current_page,start)
+        gc.collect()
+        get_list((next(current_page)))
         
 
     
