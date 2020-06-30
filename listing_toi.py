@@ -7,6 +7,7 @@ import sqlite3
 import random
 import sys
 import time
+import gc
 
 sys.setrecursionlimit(10**6)
 
@@ -84,6 +85,7 @@ def parse(soup,current_page,start):
         #print(x.get("href"))
     insert_to_db(head_array)
     head_array = []
+    gc.collect()
     end = time.time()
     print("Time taken for function: ", end - start)
     next(current_page)
@@ -110,6 +112,7 @@ def get_list(current_page):
     if passed == True:
         soup = BeautifulSoup(response.data, "html5lib")
         response.release_conn()
+        gc.collect()
         parse(soup,current_page,start)
         
 
